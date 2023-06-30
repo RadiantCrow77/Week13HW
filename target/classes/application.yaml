@@ -1,0 +1,12 @@
+spring:
+   datasource: #Spring datasource config
+      username: pet_stores
+      password: pet_stores
+      url: jdbc:mysql://localhost:3306/pet_stores
+      
+   jpa: # JPA Setup, must be in same column as datasource
+      hibernate: #Springboot library, obj relational mapper, takes entities and makes them into SQL stmts
+         ddl-auto: create #create tables
+      show-sql: true #SQL is logged
+
+     
