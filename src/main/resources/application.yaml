@@ -6,7 +6,7 @@ spring:
       
    jpa: # JPA Setup, must be in same column as datasource
       hibernate: #Springboot library, obj relational mapper, takes entities and makes them into SQL stmts
-         ddl-auto: create #create tables
+         ddl-auto: update # was create tables, now update, create wipes our data
       show-sql: true #SQL is logged
 
      
