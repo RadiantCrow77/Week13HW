@@ -42,6 +42,8 @@ public class PetStore {
 		private Set<Customer> customers = new HashSet<>();
 		
 		//  set employee annotations and relationship
+		@EqualsAndHashCode.Exclude
+		@ToString.Exclude
 		@OneToMany(mappedBy = "petStore", cascade = CascadeType.ALL, orphanRemoval = true)
 		private Set<Employee> employees = new HashSet<>();
 	}

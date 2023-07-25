@@ -1,5 +1,8 @@
 package pet.store.controller.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pet.store.entity.Customer;
@@ -21,6 +24,9 @@ public class PetStoreData {
 	private Long petStoreZip;
 	private String petStorePhone;
 	
+	private Set<PetStoreCustomer> customers = new HashSet<>();
+	private Set<PetStoreEmployee> employees = new HashSet<>();
+	
 	// constructor that takes a PetStore as a parameter. Set all matching fields in the PetStoreData class to the data in the PetStore class
 	public PetStoreData(PetStore petStore) {
 		petStoreId = petStore.getPetStoreId();
@@ -29,6 +35,7 @@ public class PetStoreData {
 		petStoreCity = petStore.getPetStoreCity();
 		petStoreState = petStore.getPetStoreState();
 		petStoreZip = petStore.getPetStoreZip();
+		petStorePhone = petStore.getPetStorePhone();
 	}
 	
 	// DTO inner class, must be public and static
