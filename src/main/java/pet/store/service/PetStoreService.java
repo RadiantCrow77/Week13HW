@@ -8,7 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pet.store.controller.model.PetStoreData;
+import pet.store.controller.model.PetStoreData.PetStoreEmployee;
+import pet.store.dao.EmployeeDao;
+import pet.store.dao.CustomerDao;
 import pet.store.dao.PetStoreDao;
+import pet.store.entity.Customer;
+import pet.store.entity.Employee;
 import pet.store.entity.PetStore;
 
 
@@ -17,6 +22,10 @@ import pet.store.entity.PetStore;
 public class PetStoreService {
 	@Autowired // spring injects
 	private PetStoreDao petStoreDao;
+	@Autowired
+	private EmployeeDao employeeDao;
+	@Autowired
+	private CustomerDao customerDao;
 
 	
 	// creates a pet store
@@ -63,4 +72,82 @@ public class PetStoreService {
 	private PetStore findPetStoreById(Long petStoreId) {
 		return petStoreDao.findById(petStoreId).orElseThrow(() -> new NoSuchElementException("Pet Store With ID: "+petStoreId+" was not found."));
 	}
-}
+
+	// HW 15 -- essentially same as savePetStore method
+	@Transactional(readOnly = false)
+	public PetStoreEmployee saveEmployee(Long petStoreId, PetStoreEmployee petStoreEmployee) {
+		// fields
+		PetStore petStore = findPetStoreById(petStoreId);
+		
+		Long employeeId = petStoreEmployee.getEmployeeId();
+		Employee employee = findOrCreateEmployee(petStoreId, employeeId);
+		
+		copyEmployeeFields(employee, petStoreEmployee);
+		
+		// set pet store in employee
+		employee.setPetStore(petStore);
+		
+		// add employee to pet store list of employees
+		petStore.getEmployees().add(employee);
+		
+		// save employee by calling save method in employee DAO
+		Employee dbEmployee = employeeDao.save(employee);
+		
+		// convert employee obj returned by save method to PetStoreEmployee obj and return
+		return new PetStoreEmployee(dbEmployee);
+	}
+	
+	private Employee findOrCreateEmployee(Long petStoreId, Long employeeId) {
+		if(Objects.isNull(employeeId)) { // if employeeID = null
+			return new Employee();  // return new employee
+		}else {
+			return findEmployeeById(petStoreId, employeeId); // else return the employee and the pet store by IDs
+		}
+	}
+	
+	// Add Employee
+	private Employee findEmployeeById(Long petStoreId, Long employeeId) {
+		Employee employee = employeeDao.findById(employeeId).orElseThrow(
+				() -> new NoSuchElementException("The Employee with Id = " + employeeId + " was not found. "));
+		// Note: findById returns an Opt
+		// if Opt = empty, throw a NoSuchElExc
+		// if Opt != empty, an employee is returned
+		// How this works: ^^^
+			// if employee pet store ID = petSToreId,
+			// return employee
+				// else throw exception with msg
+		
+		// if pet store ID in employ obj's PetSTore var != ID, throw exc
+				if(employee.getPetStore().getPetStoreId() != petStoreId) {
+					throw new IllegalStateException("Employee with ID = "+employeeId+" does not work at pet store containing ID = "+ petStoreId);
+				}
+					return employee;
+				
+		
+	}
+	
+	private void copyEmployeeFields(Employee employee, PetStoreEmployee petStoreEmployee) {
+		// copy first nm, Id, job title, last nm, phone from petStoreEmployee as setters/getters:
+		employee.setEmployeeFirstName(petStoreEmployee.getEmployeeFirstName());
+		employee.setEmployeeLastName(petStoreEmployee.getEmployeeLastName());
+		employee.setEmployeePhone(petStoreEmployee.getEmployeePhone());;
+		employee.setEmployeeJobTitle(petStoreEmployee.getEmployeeJobTitle());;
+	
+	}
+	
+	// Add Customer, almost carbon copy of Add Employee section
+	private Customer findCustomerById(Long petStoreId, Long customerId) {
+		Customer customer = customerDao.findById(customerId).orElseThrow(
+				() -> new NoSuchElementException("The Customer with Id = " + customerId + " was not found. "));
+		
+		// if pet store ID in employ obj's PetSTore var != ID, throw exc
+				if(customer.getPetStore().getPetStoreId() != petStoreId) { /// <<<<<<<<<<<<<
+					throw new IllegalStateException("Employee with ID = "+customerId+" does not work at pet store containing ID = "+ petStoreId);
+				}
+					return customer;
+				
+		
+	}
+	
+	// 
+} // end service class
