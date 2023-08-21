@@ -1,7 +1,10 @@
 package pet.store.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import pet.store.controller.model.PetStoreData;
+import pet.store.controller.model.PetStoreData.PetStoreCustomer;
 import pet.store.controller.model.PetStoreData.PetStoreEmployee;
 import pet.store.service.PetStoreService;
 
@@ -59,6 +63,26 @@ public class PetStoreController {
 		log.info("Added an employee with name {}", petStoreEmployee);
 		return petStoreService.saveEmployee(petStoreId, petStoreEmployee);
 		
+	}
+	
+	// CREATE customer
+	@PostMapping("/{petStoreId}/customer")
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public PetStoreCustomer addCustomer(
+			@PathVariable Long petStoreId,
+			@RequestBody PetStoreCustomer petStoreCustomer
+			) {
+		log.info("Added customer with name {}", petStoreCustomer);
+		return petStoreService.saveCustomer(petStoreId, petStoreCustomer);
+	}
+	
+	// List all pet Stores
+	// GET/READ  all pet stores
+	@GetMapping
+	public List<PetStoreData> retrieveAllPetStores() {
+		log.info("Retrieve all pet stores...");
+		List<PetStoreData> petStores = petStoreService.retrieveAllPetStores();
+		return petStores;
 	}
 		
 	} // ends file
