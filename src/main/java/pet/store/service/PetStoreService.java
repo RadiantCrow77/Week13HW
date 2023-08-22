@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pet.store.controller.model.PetStoreData;
 import pet.store.controller.model.PetStoreData.PetStoreCustomer;
 import pet.store.controller.model.PetStoreData.PetStoreEmployee;
-import pet.store.dao.EmployeeDao;
 import pet.store.dao.CustomerDao;
+import pet.store.dao.EmployeeDao;
 import pet.store.dao.PetStoreDao;
 import pet.store.entity.Customer;
 import pet.store.entity.Employee;
@@ -204,7 +204,7 @@ public class PetStoreService {
 		customer.setCustomerEmail(petStoreCustomer.getCustomerEmail());
 	}
 
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = true)
 	public List<PetStoreData> retrieveAllPetStores() {
 	List<PetStore> petStores = petStoreDao.findAll(); // call the findAll method in DAO
 	List<PetStoreData> result = new LinkedList<>(); // convert List of PetStore objects to a list of PetStoreData objects
@@ -220,5 +220,24 @@ public class PetStoreService {
 	return result; // return summary list
 	}
 
-	//
+	// GET petStore by ID
+	@Transactional(readOnly = true)
+	public PetStoreData retrievePetStoreById(Long petStoreId) {
+//		PetStore petStore = findPetStoreById(petStoreId);
+		PetStore petStore =  petStoreDao.findById(petStoreId).orElseThrow(
+				() -> new NoSuchElementException("The Pet Store with Id = " + petStoreId + " was not found. "));
+		
+//		PetStoreData psd = PetStoreData(petStore);
+		PetStoreData psd = new PetStoreData(petStore);
+		return psd;
+	}
+
+	// DELETE petStore by ID
+	@Transactional(readOnly = false)
+	public void deletePetStoreById(Long petStoreId) {
+		PetStore petStore =  petStoreDao.findById(petStoreId).orElseThrow(
+				() -> new NoSuchElementException("The Pet Store with Id = " + petStoreId + " was not found. "));
+		petStoreDao.delete(petStore);
+	}
+	
 } // end service class
