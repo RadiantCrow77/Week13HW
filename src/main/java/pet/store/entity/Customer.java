@@ -30,6 +30,6 @@ public class Customer {
 	// *** EXPLAIN THESE AND GO THROUGH VIDS
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	@ManyToMany(mappedBy = "customers", cascade = CascadeType.PERSIST)
+	@ManyToMany(mappedBy = "customers", cascade = CascadeType.PERSIST) 
 	private Set<PetStore> petStores = new HashSet<>();
 }

@@ -36,7 +36,19 @@ public class PetStoreData {
 		petStoreState = petStore.getPetStoreState();
 		petStoreZip = petStore.getPetStoreZip();
 		petStorePhone = petStore.getPetStorePhone();
+		
+		// for each customer in customers ... 
+		for (Customer customer : petStore.getCustomers()) {
+			PetStoreCustomer petStoreCustomer = new PetStoreCustomer(customer); // make a new pet store customer
+			customers.add(petStoreCustomer); // and add it
+		}
+		for (Employee employee : petStore.getEmployees()) {
+			PetStoreEmployee petStoreEmployee = new PetStoreEmployee(employee);
+			employees.add(petStoreEmployee);
+		}
 	}
+	
+
 	
 	// DTO inner class, must be public and static
 	@Data
@@ -83,5 +95,7 @@ public class PetStoreData {
 			employeeJobTitle = employee.getEmployeeJobTitle();
 		}
 	}
+	
+	
 	
 } // end main class
